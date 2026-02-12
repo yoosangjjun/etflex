@@ -1,0 +1,13 @@
+services:
+  etflex:
+    build: .
+    container_name: etflex
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - ./etflex.db:/app/etflex.db
+      - ./ml/models:/app/ml/models
+      - ./logs:/app/logs
