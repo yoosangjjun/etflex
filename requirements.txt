@@ -3,7 +3,7 @@ setuptools<71
 pykrx>=1.0.45
 
 # Data processing
-pandas>=2.0.0
+pandas>=2.0.0,<3.0.0
 numpy>=1.24.0
 
 # Technical indicators
