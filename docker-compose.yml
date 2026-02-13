@@ -8,6 +8,6 @@ services:
     environment:
       - TZ=Asia/Seoul
     volumes:
-      - ./etflex.db:/app/etflex.db
+      - ./db:/app/db
       - ./ml/models:/app/ml/models
       - ./logs:/app/logs

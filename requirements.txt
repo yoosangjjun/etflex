@@ -1,4 +1,5 @@
 # Data collection
+setuptools<71
 pykrx>=1.0.45
 
 # Data processing

@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
@@ -15,6 +15,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Create directories for persistent data
-RUN mkdir -p /app/logs /app/ml/models
+RUN mkdir -p /app/logs /app/ml/models /app/db
 
 CMD ["python", "main.py", "serve"]

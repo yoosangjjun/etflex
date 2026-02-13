@@ -9,7 +9,7 @@ load_dotenv()
 
 # --- Paths ---
 BASE_DIR = Path(__file__).resolve().parent.parent
-DB_PATH = BASE_DIR / "etflex.db"
+DB_PATH = BASE_DIR / "db" / "etflex.db"
 LOG_DIR = BASE_DIR / "logs"
 ML_MODEL_DIR = BASE_DIR / "ml" / "models"
 

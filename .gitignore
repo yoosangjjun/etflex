@@ -17,6 +17,7 @@ env/
 
 # SQLite databases
 *.db
+db/
 
 # Logs
 logs/
