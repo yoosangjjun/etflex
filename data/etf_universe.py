@@ -18,19 +18,22 @@ from config.settings import DATE_FORMAT_KRX, MAX_RETRIES, RETRY_DELAY_SEC
 
 logger = logging.getLogger(__name__)
 
-KRX_API_URL = "http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd"
+KRX_API_URL = "https://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd"
 KRX_HEADERS = {
     "User-Agent": "Mozilla/5.0",
-    "Referer": "http://data.krx.co.kr/",
+    "Referer": "https://data.krx.co.kr/",
 }
 
 
-def _fetch_etf_tickers_direct(date_str: str) -> List[str]:
-    """Fetch ETF tickers directly from KRX API (bypasses pykrx bug)."""
+def _fetch_etf_tickers_direct() -> List[str]:
+    """Fetch ETF tickers directly from KRX API (bypasses pykrx bug).
+
+    MDCSTAT04601 is the '전종목 기본정보' endpoint which lists all
+    currently listed ETFs. It does NOT require a trading date parameter.
+    """
     data = {
         "bld": "dbms/MDC/STAT/standard/MDCSTAT04601",
         "locale": "ko_KR",
-        "trdDd": date_str,
     }
     resp = requests.post(KRX_API_URL, headers=KRX_HEADERS, data=data)
     resp.raise_for_status()
@@ -87,7 +90,7 @@ def get_etf_ticker_list(target_date: Optional[date] = None) -> List[str]:
 
         # Fallback: direct KRX API
         try:
-            tickers = _fetch_etf_tickers_direct(date_str)
+            tickers = _fetch_etf_tickers_direct()
             if tickers:
                 logger.info("Fetched %d ETF tickers for %s (direct API)", len(tickers), date_str)
                 return tickers

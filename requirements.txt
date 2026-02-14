@@ -1,6 +1,6 @@
 # Data collection
 setuptools<71
-pykrx>=1.0.45
+pykrx>=1.2.4
 
 # Data processing
 pandas>=2.0.0,<3.0.0
