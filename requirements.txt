@@ -4,10 +4,7 @@ pykrx>=1.2.4
 
 # Data processing
 pandas>=2.0.0,<3.0.0
-numpy>=1.24.0
-
-# Technical indicators
-pandas-ta>=0.4.67b
+numpy>=1.24.0,<2.0.0
 
 # Machine Learning
 scikit-learn>=1.3.0

@@ -8,21 +8,34 @@ Bollinger Bands (20, 2σ), Volume MA (20).
 import logging
 
 import pandas as pd
-import pandas_ta as ta
 
 logger = logging.getLogger(__name__)
+
+
+def _sma(series: pd.Series, period: int) -> pd.Series:
+    return series.rolling(window=period, min_periods=period).mean()
+
+
+def _rsi(series: pd.Series, period: int) -> pd.Series:
+    delta = series.diff()
+    gain = delta.where(delta > 0, 0.0)
+    loss = -delta.where(delta < 0, 0.0)
+    avg_gain = gain.ewm(alpha=1 / period, min_periods=period, adjust=False).mean()
+    avg_loss = loss.ewm(alpha=1 / period, min_periods=period, adjust=False).mean()
+    rs = avg_gain / avg_loss
+    return 100 - (100 / (1 + rs))
 
 
 def add_moving_averages(df: pd.DataFrame) -> pd.DataFrame:
     """Add MA5, MA20, MA60, MA120 columns."""
     for period in [5, 20, 60, 120]:
-        df[f"ma{period}"] = ta.sma(df["close"], length=period)
+        df[f"ma{period}"] = _sma(df["close"], period)
     return df
 
 
 def add_rsi(df: pd.DataFrame, period: int = 14) -> pd.DataFrame:
     """Add RSI column (default 14-period)."""
-    df["rsi"] = ta.rsi(df["close"], length=period)
+    df["rsi"] = _rsi(df["close"], period)
     return df
 
 
@@ -33,11 +46,11 @@ def add_macd(
     signal: int = 9,
 ) -> pd.DataFrame:
     """Add MACD, MACD signal, MACD histogram columns."""
-    macd_result = ta.macd(df["close"], fast=fast, slow=slow, signal=signal)
-    if macd_result is not None and not macd_result.empty:
-        df["macd"] = macd_result.iloc[:, 0]
-        df["macd_signal"] = macd_result.iloc[:, 1]
-        df["macd_hist"] = macd_result.iloc[:, 2]
+    fast_ema = df["close"].ewm(span=fast, adjust=False).mean()
+    slow_ema = df["close"].ewm(span=slow, adjust=False).mean()
+    df["macd"] = fast_ema - slow_ema
+    df["macd_signal"] = df["macd"].ewm(span=signal, adjust=False).mean()
+    df["macd_hist"] = df["macd"] - df["macd_signal"]
     return df
 
 
@@ -45,19 +58,18 @@ def add_bollinger_bands(
     df: pd.DataFrame, period: int = 20, std: float = 2.0
 ) -> pd.DataFrame:
     """Add Bollinger Bands (upper, middle, lower) columns."""
-    bb_result = ta.bbands(df["close"], length=period, std=std)
-    if bb_result is not None and not bb_result.empty:
-        df["bb_lower"] = bb_result.iloc[:, 0]
-        df["bb_middle"] = bb_result.iloc[:, 1]
-        df["bb_upper"] = bb_result.iloc[:, 2]
-        df["bb_bandwidth"] = bb_result.iloc[:, 3]
-        df["bb_percent"] = bb_result.iloc[:, 4]
+    df["bb_middle"] = _sma(df["close"], period)
+    rolling_std = df["close"].rolling(window=period, min_periods=period).std()
+    df["bb_upper"] = df["bb_middle"] + std * rolling_std
+    df["bb_lower"] = df["bb_middle"] - std * rolling_std
+    df["bb_bandwidth"] = (df["bb_upper"] - df["bb_lower"]) / df["bb_middle"]
+    df["bb_percent"] = (df["close"] - df["bb_lower"]) / (df["bb_upper"] - df["bb_lower"])
     return df
 
 
 def add_volume_ma(df: pd.DataFrame, period: int = 20) -> pd.DataFrame:
     """Add volume moving average and volume ratio columns."""
-    df["volume_ma20"] = ta.sma(df["volume"], length=period)
+    df["volume_ma20"] = _sma(df["volume"], period)
     df["volume_ratio"] = df["volume"] / df["volume_ma20"]
     return df
 
