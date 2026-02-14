@@ -104,7 +104,7 @@ Docker는 `etflex.db`, `ml/models/`, `logs/`를 호스트에 볼륨 마운트하
 
 ### 로컬 실행
 
-Python 3.11+ 환경에서 직접 실행할 경우:
+Python 3.12+ 환경에서 직접 실행할 경우:
 
 ```bash
 git clone <repo-url> && cd etflex
