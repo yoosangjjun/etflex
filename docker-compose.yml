@@ -1,0 +1,10 @@
+services:
+  etflex:
+    build: .
+    container_name: etflex
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./charts:/app/charts

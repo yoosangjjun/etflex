@@ -1,0 +1,25 @@
+# 모니터링 대상 ETF 목록
+# ticker: KRX 티커 코드
+# name: ETF 이름 (표시용)
+
+etfs:
+  - ticker: "069500"
+    name: "KODEX 200"
+  - ticker: "229200"
+    name: "KODEX 코스닥150"
+  - ticker: "114800"
+    name: "KODEX 인버스"
+  - ticker: "122630"
+    name: "KODEX 레버리지"
+  - ticker: "252670"
+    name: "KODEX 200선물인버스2X"
+  - ticker: "371460"
+    name: "TIGER 차이나전기차SOLACTIVE"
+  - ticker: "305720"
+    name: "KODEX 2차전지산업"
+  - ticker: "364690"
+    name: "KODEX Fn반도체"
+  - ticker: "139260"
+    name: "TIGER 200IT"
+  - ticker: "091220"
+    name: "TIGER 은행"
